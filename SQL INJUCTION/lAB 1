@@ -1,0 +1,12 @@
+SQL Injection Vulnerability in WHERE Clause Allowing Retrieval of Hidden Data
+ Objective
+Identify and exploit a SQL Injection vulnerability in the product category filter to access hidden products.
+Discovery
+The category parameter was tested with a single quote (`'`). The application's behavior indicated that user input was being processed directly in the SQL query, suggesting a possible SQL Injection vulnerability.
+Exploitation
+he following payload was injected into the category parameter:
+' OR 1=1--
+This modified the query logic, causing the condition to always evaluate as true and bypassing the `released = 1` restriction.
+Result
+The application displayed all products, including unreleased products, confirming successful SQL Injection.
+
