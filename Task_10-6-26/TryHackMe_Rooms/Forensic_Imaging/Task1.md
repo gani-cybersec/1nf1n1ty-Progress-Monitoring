@@ -17,7 +17,6 @@ Additionally, forensic imaging plays an important role in maintaining the **Chai
 
 * Intro to Digital Forensics
 * DFIR: An Introduction
-* Linux Fundamentals 1
+* Linux Fundamentals 1.
 * Legal Considerations in DFIR
-
 
