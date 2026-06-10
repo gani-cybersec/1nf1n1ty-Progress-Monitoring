@@ -32,9 +32,9 @@ The iframe dimensions were adjusted and its opacity was reduced to make it nearl
 
 <div>Click me</div>
 
-<iframe src="https://YOUR-LAB-ID.web-security-academy.net/my-account?email=hacker@example.com"></iframe>
+<iframe src="https://0a94004f046a55fc8087038e009d0066.web-security-academy.net/my-account?email=hacker@example.com"></iframe>
 ```
 
-## Conclusion
+
 
 This lab demonstrates that an attacker can combine clickjacking with URL-based form prepopulation to perform actions requiring user input with a single click. Since the request originates from the legitimate page, valid session information and CSRF tokens are included automatically. To prevent such attacks, applications should implement anti-framing protections such as **X-Frame-Options** and **Content Security Policy (CSP)** and avoid allowing sensitive form fields to be prepopulated through URL parameters.
