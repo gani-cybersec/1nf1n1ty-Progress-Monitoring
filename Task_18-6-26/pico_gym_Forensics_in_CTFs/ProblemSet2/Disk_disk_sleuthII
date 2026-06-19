@@ -1,0 +1,176 @@
+# CyLab Security Academy – Disk, disk, sleuth! II 
+
+## Challenge Description
+
+In this challenge, we are provided with a disk image and informed that the file containing the flag is named:
+
+```text
+down-at-the-bottom.txt
+```
+
+The objective is to locate this file within the disk image and extract its contents using tools from **The Sleuth Kit (TSK)**.
+
+**File Provided:** `dds2-alpine.flag.img.gz`
+
+---
+
+## Step 1: Extract the Disk Image
+
+Since the provided file is compressed using gzip, it must first be decompressed:
+
+```bash
+gunzip dds2-alpine.flag.img.gz
+```
+
+This produces the disk image:
+
+```text
+dds2-alpine.flag.img
+```
+
+---
+
+## Step 2: Determine the Partition Offset
+
+To examine the partition layout of the disk image, use the `mmls` command:
+
+```bash
+mmls dds2-alpine.flag.img
+```
+
+Output:
+
+```text
+DOS Partition Table
+Offset Sector: 0
+
+      Slot      Start        End          Length       Description
+00:   Meta      0000000000   0000000000   0000000001
+01:   -------   0000000000   0000002047   0000002048
+02:   00:000    0000002048   ...
+```
+
+From the output, the Linux partition starts at sector:
+
+```text
+2048
+```
+
+This offset will be supplied to subsequent TSK commands using the `-o` option.
+
+---
+
+## Step 3: Locate the Target File
+
+Use `fls` to recursively enumerate files in the filesystem and search for the target filename:
+
+```bash
+fls -r -o 2048 dds2-alpine.flag.img | grep "down-at-the-bottom"
+```
+
+Output:
+
+```text
+r/r 18291: down-at-the-bottom.txt
+```
+
+This reveals that the file has inode number:
+
+```text
+18291
+```
+
+---
+
+## Step 4: Extract the File Contents
+
+Using the inode number obtained in the previous step, extract the file with `icat`:
+
+```bash
+icat -o 2048 dds2-alpine.flag.img 18291
+```
+
+Output:
+
+```text
+   (\_/)
+   (•.•)
+   />🍪
+
+(p)(i)(c)(o)(C)(T)(F){(f)(0)(r)(3)(n)
+(s)(1)(c)(4)(t)(0)(r)(n)(0)(v)(1)(c)
+(3)(4)(b)(d)(7)(2)(1)(f)(2)}
+```
+
+Removing the decorative parentheses gives:
+
+```text
+picoCTF{f0r3ns1c4t0rn0v1c34bd721f2}
+```
+
+---
+
+## Flag
+
+```text
+picoCTF{f0r3ns1c4t0rn0v1c34bd721f2}
+```
+
+---
+
+## Commands Used
+
+### Extract the Disk Image
+
+```bash
+gunzip dds2-alpine.flag.img.gz
+```
+
+### Determine the Partition Offset
+
+```bash
+mmls dds2-alpine.flag.img
+```
+
+### Recursively List Files and Locate the Target File
+
+```bash
+fls -r -o 2048 dds2-alpine.flag.img | grep "down-at-the-bottom"
+```
+
+### Extract the File Contents Using Its Inode Number
+
+```bash
+icat -o 2048 dds2-alpine.flag.img 18291
+```
+
+---
+
+## Key Concepts Learned
+
+* **mmls** is used to identify partitions and determine their starting offsets.
+* The `-o` option specifies the partition offset when analyzing a filesystem inside a disk image.
+* **fls** enumerates files and directories and can recursively traverse the entire filesystem.
+* **grep** can be used to filter the output of `fls` and locate a specific filename.
+* **icat** extracts file contents directly from an inode, even if the file is deleted.
+* Inode numbers uniquely identify files within a filesystem and are commonly used in forensic investigations.
+
+This challenge demonstrates a typical forensic workflow using The Sleuth Kit:
+
+```text
+Disk Image
+    ↓
+mmls
+    ↓
+Partition Offset
+    ↓
+fls
+    ↓
+Inode Number
+    ↓
+icat
+    ↓
+Recovered File
+```
+
+This sequence (**mmls → fls → icat**) is one of the most common approaches used in disk forensic analysis.
